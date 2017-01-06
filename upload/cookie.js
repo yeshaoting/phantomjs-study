@@ -1,5 +1,8 @@
 var fs = require('fs');
 
+// var file = "/Users/yeshaoting/workspace/scripts/js/phantomjs-study/upload/images/header.png";
+var file = "/Users/yeshaoting/Pictures/6035219325378201.jpeg";
+
 var page = require('webpage').create();
 // console.log('The default user agent is ' + page.settings.userAgent);
 // page.settings.userAgent = 'SpecialAgent';
@@ -17,7 +20,7 @@ page.viewportSize = {
 
 phantom.addCookie({
   'name': 'BDUSS',
-  'value': '0lzNkw0S0JaUVI5LVRDM0k5OE93dUVHMjhHWkl1RUZlSEl5RmVtWUhpTGlDbzlZSVFBQUFBJCQAAAAAAAAAAAEAAAD~9poMxu24o8a9sLIxMjMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOJ9Z1jifWdYT',
+  'value': 'FBN29ZSVd4bExTUGF5bml3QnJoTzNObVhRbkFwdTg4STg3ck01N2ljOFBhWkZZSVFBQUFBJCQAAAAAAAAAAAEAAAD~9poMxu24o8a9sLIxMjMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA~caVgP3GlYQU',
   'domain': '.baidu.com'
 });
 
@@ -36,6 +39,10 @@ page.open(url, function(status) {
 
     var username = $(".user-name");
     console.log("username: " + username.text());
+    if (username == '' || !username) {
+      console.log("fail login~");
+      phantom.exit(1);
+    }
 
     scrollIntoView($("#shopUpload").get(0));
 
@@ -44,24 +51,28 @@ page.open(url, function(status) {
       $element.scrollIntoView();
     }
 
-    console.log("multiple attr1:" + $("#shopUpload input[type=file]").attr("multiple"));
-    $("#shopUpload input[type=file]").removeAttr("multiple");
-    $("#shopUpload input[type=file]").removeAttr("accept");
-    console.log("multiple attr2:" + $("#shopUpload input[type=file]").attr("multiple"));
+    var $showUploadInput = $("#shopUpload input[type=file]");
+    console.log("multiple attr1:" + $showUploadInput.attr("multiple"));
+    $showUploadInput.removeAttr("multiple");
+    // $showUploadInput.removeAttr("accept");
+    console.log("multiple attr2:" + $showUploadInput.attr("multiple"));
 
   });
 
-  page.render('screen_page.png');
-
-  write("index.html", page.content);
-
+  page.render('screenshots/screen_page.png');
 
   console.log("before upload file~");
-  page.uploadFile('#shopUpload input[type=file]', '/Users/yeshaoting/workspace/scripts/js/phantomjs-study/upload/header.png');
-  page.render('screen_upload.png');
-  console.log("after upload file~");
+  write("index_before.html", page.content);
+  page.uploadFile('#shopUpload input[type=file]', file);
 
-  phantom.exit();
+  setTimeout(function() {
+    page.render('screenshots/screen_upload.png');
+    write("index_after.html", page.content);
+    console.log("after upload file~");
+
+    phantom.exit();
+  }, 5000);
+
 });
 
 function write(file, content) {

@@ -33,7 +33,7 @@ function take_png() {
    count--;
    if (count >= 0) {
         console.log(count + ". take png~");
-        page.render('screen' + count + '.png'); 
+        page.render('screenshots/screen' + count + '.png'); 
    } else {
        console.log("exit~")
        phantom.exit()
